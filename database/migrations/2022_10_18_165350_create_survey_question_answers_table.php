@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
+class CreateSurveyQuestionAnswersTable extends Migration
 {
     /**
      * Run the migrations.
@@ -15,6 +15,9 @@ return new class extends Migration
     {
         Schema::create('survey_question_answers', function (Blueprint $table) {
             $table->id();
+            $table->foreignIdFor(\App\Models\SurveyQuestion::class, 'survey_question_id');
+            $table->foreignIdFor(\App\Models\SurveyAnswer::class, 'survey_answer_id');
+            $table->text('answer');
             $table->timestamps();
         });
     }
