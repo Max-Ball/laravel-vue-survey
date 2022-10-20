@@ -1,94 +1,7 @@
 import { createStore } from 'vuex'
 import axiosClient from '../axios'
 
-const tmpSurveys = [
-  {
-    id: 100,
-    title: "Max Survey",
-    slug: "my survey me max",
-    status: "draft",
-    image: "https://www.thiscatdoesnotexist.com",
-    description: "It's a survey by me",
-    created_at: "2022-10-28 17:10:00",
-    updated_at: "2022-10-28 17:10:00",
-    expire_date: "2022-11-28 17:10:00",
-    questions: [
-      {
-        id: 1,
-        type: "select",
-        question: "From which country are you?",
-        description: null,
-        data: {
-          options: [
-            { uuid: "f8af96f2-1d80-4632-9e9e-b560670e52ea", text: "USA" },
-            { uuid: "d8af43s2-1d80-4632-9e9e-g564070e52fc", text: "China" }
-          ]
-        }
-      },
-      {
-        id: 2,
-        type: "checkbox",
-        question: "Which language do you speak?",
-        description: "what a dumb question",
-        data: {
-          options: [
-            {
-              uuid: "x8af46f2-1d80-4632-9e9e-b560670e52ea",
-              text: "English"
-            },
-            {
-              uuid: "t4af46f2-1d80-4632-3x4z-b560670e52ea",
-              text: "Chinese"
-            }
-          ]
-        }
-      }
-    ]
-  },
-  {
-    id: 200,
-    title: "Another Survey",
-    slug: "another survey by me max",
-    status: "draft",
-    image: "https://www.thiscatdoesnotexist.com",
-    description: "It's another survey by me",
-    created_at: "2022-10-28 17:10:00",
-    updated_at: "2022-10-28 17:10:00",
-    expire_date: "2022-11-28 17:10:00",
-    questions: [
-      {
-        id: 3,
-        type: "select",
-        question: "From which city are you?",
-        description: null,
-        data: {
-          options: [
-            { uuid: "s8af96f2-1d80-4632-9e9e-b560670e52ea", text: "Boise" },
-            { uuid: "p8af43s2-1d80-4632-9e9e-g564070e52fc", text: "Portland" }
-          ]
-        }
-      },
-      {
-        id: 4,
-        type: "checkbox",
-        question: "Which language do you write?",
-        description: "what a dumb question",
-        data: {
-          options: [
-            {
-              uuid: "t8af46f2-1d80-4632-9e9e-b560670e52ea",
-              text: "English"
-            },
-            {
-              uuid: "m4af46f2-1d80-4632-3x4z-b560670e52ea",
-              text: "Mandarin"
-            }
-          ]
-        }
-      }
-    ]
-  }
-]
+
 
 const store = createStore(
   {
@@ -97,28 +10,59 @@ const store = createStore(
         data: {},
         token: sessionStorage.getItem('TOKEN')
       },
-      surveys: [...tmpSurveys],
+      currentSurvey: {
+        loading: false,
+        data: {}
+      },
+      surveys: {
+        loading: false,
+      data: []
+      },
       questionTypes: ["text", "select", "radio", "checkbox", "textarea"],
     },
     getters: {},
     actions: {
+      getSurvey({ commit }, id) {
+        commit("setCurrentSurveyLoading", true)
+        return axiosClient.get(`/survey/${id}`).then((res) => {
+            commit("setCurrentSurvey", res.data)
+            commit("setCurrentSurveyLoading", false)
+            return res
+          }).catch((err) => {
+            commit("setCurrentSurveyLoading", false)
+            throw err
+        })
+      },
       saveSurvey({ commit }, survey) {
         delete survey.image_url
         let response;
         if (survey.id) {
+          console.log(survey.id);
           response = axiosClient
             .put(`/survey/${survey.id}`, survey)
             .then((res) => {
-              commit("updateSurvey", res.data)
+              commit("setCurrentSurvey", res.data)
               return res
           })
         } else {
           response = axiosClient.post("/survey", survey).then((res) => {
-            commit("saveSurvey", res.data)
+            commit("setCurrentSurvey", res.data)
             return res
           })
         }
         return response
+      },
+      deleteSurvey({ }, id) {
+        console.log(id);
+        return axiosClient.delete(`/survey/${id}`)
+      },
+      getSurveys({ commit }) {
+        commit('setSurveysLoading', true)
+        return axiosClient.get("/survey").then((res) => {
+          commit('setSurveysLoading', false)
+          commit('setSurveys', res.data)
+          return res
+        })
       },
       register({ commit }, user) {
         return axiosClient.post('/register', user)
@@ -146,16 +90,17 @@ const store = createStore(
       }
     },
     mutations: {
-      saveSurvey: (state, survey) => {
-        state.surveys = [...state.surveys, survey.data]
+      setCurrentSurveyLoading: (state, loading) => {
+        state.currentSurvey.loading = loading
       },
-      updateSurvey: (state, survey) => {
-        state.surveys = state.surveys.map((s) => {
-          if (s.id == survey.data.id) {
-            return survey.data
-          }
-          return s
-        })
+      setSurveysLoading: (state, loading) => {
+        state.surveys.loading = loading
+      },
+      setCurrentSurvey: (state, survey) => {
+        state.currentSurvey.data = survey.data
+      },
+      setSurveys: (state, surveys) => {
+        state.surveys.data = surveys.data
       },
       logout: (state) => {
         // @ts-ignore

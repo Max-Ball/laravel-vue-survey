@@ -67,7 +67,19 @@ class SurveyController extends Controller
      */
     public function update(UpdateSurveyRequest $request, Survey $survey)
     {
-        $survey->update($request->validate());
+        $data = $request->validated();
+
+        if (isset($data['image'])) {
+            $relativePath = $this->saveImage($data['image']);
+            $data['image'] = $relativePath;
+
+            if ($survey->image) {
+                $absolutePath = public_path($survey->image);
+                File::delete($absolutePath);
+            }
+        }
+
+        $survey->update($data);
         return new SurveyResource($survey);
     }
 
@@ -85,6 +97,11 @@ class SurveyController extends Controller
         }
 
         $survey->delete();
+
+        if ($survey->image) {
+            $absolutePath = public_path($survey->image);
+            File::delete($absolutePath);
+        }
         return response('', 204);
     }
 
