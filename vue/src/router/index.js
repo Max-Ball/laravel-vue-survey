@@ -13,6 +13,8 @@ import Dashboard from '../views/Dashboard.vue'
 import Surveys from '../views/Surveys.vue'
 // @ts-ignore
 import SurveyView from '../views/SurveyView.vue'
+// @ts-ignore
+import SurveyPublicView from '../views/SurveyPublicView.vue'
 import store from "../store"
 
 const routes = [
@@ -27,6 +29,11 @@ const routes = [
       { path: '/surveys/create', name: 'SurveyCreate', component: SurveyView },
       { path: '/surveys/:id', name: 'SurveyView', component: SurveyView }
     ]
+  },
+  {
+    path: '/view/survey/:slug',
+    name: 'SurveyPublicView',
+    component: SurveyPublicView
   },
   {
     path: '/auth',
