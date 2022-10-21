@@ -82,7 +82,7 @@
           <div class="px-4 py-5 bg-white space-y-6 sm:p-6">
             <h3 class="text-2xl font-semibold flex items-center justify-between">
               Questions
-              <button type="submit" @click="addQuestion"
+              <button type="button" @click="addQuestion"
                 class="flex items-center text-sm py-1 px-4 rounded-sm text-white bg-gray-600 hover:bg-gray-700">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                   stroke="currentColor" class="w-6 h-6">

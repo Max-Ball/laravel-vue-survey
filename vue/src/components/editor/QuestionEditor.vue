@@ -71,7 +71,7 @@
           Add Options
         </button>
       </h4>
-      <div v-if="!model.data.options.length" class="text-xs text-gray-600 text-center py-3">
+      <div v-if="!model.data.options" class="text-xs text-gray-600 text-center py-3">
         You don't have any options defined
       </div>
       <div v-for="(option, index) in model.data.options" :key="option.uuid" class="flex items-center mb-1">
