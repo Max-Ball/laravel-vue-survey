@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use DateTime;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class SurveyAnswerResource extends JsonResource
@@ -17,7 +18,7 @@ class SurveyAnswerResource extends JsonResource
         return [
             'id' => $this->id,
             'survey' => new SurveyResource($this->survey),
-            'end_date' => $this->end_date
+            'end_date' => (new DateTime($this->end_date))->format('m-d-Y H:i')
         ];
     }
 }
