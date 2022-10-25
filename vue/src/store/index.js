@@ -60,7 +60,6 @@ const store = createStore(
         delete survey.image_url
         let response;
         if (survey.id) {
-          console.log(survey.id);
           response = axiosClient
             .put(`/survey/${survey.id}`, survey)
             .then((res) => {
@@ -76,7 +75,6 @@ const store = createStore(
         return response
       },
       deleteSurvey({ }, id) {
-        console.log(id);
         return axiosClient.delete(`/survey/${id}`)
       },
       getSurveys({ commit }, { url = null } = {}) {
@@ -114,13 +112,11 @@ const store = createStore(
         return axiosClient.post('/login', user)
           .then((data) => {
             commit('setUser', data)
-            console.log(data);
             return data
 
           })
       },
       logout({ commit }) {
-        console.log(this.state.user, 'user info');
         return axiosClient.post('/logout')
           .then(response => {
             commit('logout')
@@ -158,10 +154,6 @@ const store = createStore(
         state.user.token = userData.data.token
         state.user.data = userData.data.user
         sessionStorage.setItem('TOKEN', userData.data.token)
-        console.log('token Data', userData.data.token);
-        console.log('user Data', userData.data.user);
-        console.log('token state', state.user.token);
-        console.log('user state', state.user.data);
       },
       notify: (state, {message, type}) => {
         state.notification.show = true;
