@@ -3,6 +3,10 @@
     <div v-if="loading" class="flex justify-center">
       Loading...
     </div>
+    <div v-else-if="!data.latestSurvey.image_url"
+      class="text-2xl font-semibold flex-1 flex items-center justify-center">
+      Create or complete a survey to view the information on your dashboard
+    </div>
     <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 text-gray-700">
       <div class="bg-white shadow-md p-3 text-center flex flex-col order-1 lg:order-2 animate-fade-in-down"
         style="animation-delay: 0.1s">
